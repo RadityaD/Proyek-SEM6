@@ -1,0 +1,19 @@
+<scene formatVersion="1.0" upAxis="y" unitsPerMeter="1" unitType="meters" minOgreVersion="1.7" ogreMaxVersion="2.4.4" author="OgreMax Scene Exporter (www.ogremax.com)" application="3DS Max">
+    <environment>
+        <colourAmbient r="0.333333" g="0.333333" b="0.333333" />
+        <colourBackground r="0" g="0" b="0" />
+        <clipping near="0" far="2540" />
+    </environment>
+    <nodes>
+        <node name="Platform2">
+            <position x="0.288996" y="-6.01473e-009" z="-0.137601" />
+            <scale x="1.53645" y="0.971794" z="0.971794" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="Platform2" castShadows="true" receiveShadows="true" meshFile="Platform2.mesh">
+                <subentities>
+                    <subentity index="0" materialName="01-Default" />
+                </subentities>
+            </entity>
+        </node>
+    </nodes>
+</scene>
