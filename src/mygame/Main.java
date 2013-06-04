@@ -13,6 +13,7 @@ import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.font.BitmapText;
 import com.jme3.input.ChaseCamera;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
@@ -38,6 +39,7 @@ import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.screen.Screen;
 import java.awt.event.ActionEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,10 +58,12 @@ implements PhysicsCollisionListener
     Material mat_terrain1;
     TerrainQuad terrain;
     TerrainQuad terrain1;
-    Spatial hero, landscape, platform1, platform2, platform3;
+    float kecepatan = 0.4f;
+    Spatial hero, landscape, platform1, platform2, platform3, platform4;
     CharacterControl herocontrol;
     BulletAppState bulletAppState = new BulletAppState();
-    RigidBodyControl terrain_control1, terrain_control2, platfrm1, platfrm2, platfrm3;
+    RigidBodyControl terrain_control1, terrain_control2, platfrm1, platfrm2, platfrm3, platfrm4;
+    String notiftext = "";
     AnimControl animctrl;
     AnimChannel animchn1, animchn2, animchn3;
     Vector3f walkDirection = new Vector3f();
@@ -170,6 +174,22 @@ implements PhysicsCollisionListener
         rootNode.attachChild(platform3);
         bulletAppState.getPhysicsSpace().add(platfrm3);
         /*## END-OF-PLATFORM-3 ##*/
+        
+        /*## PLATFORM-4 ##*/
+        //Setting Spatial
+        platform4 = assetManager.loadModel("Scenes/Platform3/Platform3.mesh.xml");
+        platform4.setMaterial(matplat);
+        platform4.scale(5f);
+        platform4.setLocalTranslation(-200, 5, -300);
+        platform4.setLocalRotation(new Quaternion(0, 10, 0, 10));
+        
+        //Physic
+        platfrm4 = new RigidBodyControl(0);
+        platform4.addControl(platfrm4);
+        
+        rootNode.attachChild(platform4);
+        bulletAppState.getPhysicsSpace().add(platfrm4);
+        /*## END-OF-PLATFORM-4 ##*/
     }
     
     void initTiren()
@@ -235,11 +255,22 @@ implements PhysicsCollisionListener
         inputManager.addMapping("Forward", new KeyTrigger(KeyInput.KEY_W));
         inputManager.addMapping("Backward", new KeyTrigger(KeyInput.KEY_S));
         inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
+        inputManager.addMapping("Sprint", new KeyTrigger(KeyInput.KEY_LSHIFT));
         
         inputManager.addListener(actionListener, 
-                "Left", "Right", "Forward", "Backward", "Jump");
+                "Left", "Right", "Forward", "Backward", "Jump", "Sprint");
     }
      
+    void initGUI2D()
+    {
+        guiFont = assetManager.loadFont("Interface/Fonts/8BITWONDER.fnt");
+        BitmapText notif = new BitmapText(guiFont);
+        notif.setText(notiftext);
+        notif.setColor(ColorRGBA.White);
+        notif.setLocalTranslation(settings.getWidth()/2, settings.getHeight()/2, 0);
+        
+        guiNode.attachChild(notif);
+    }
 
     @Override
     public void simpleInitApp() {
@@ -301,25 +332,38 @@ implements PhysicsCollisionListener
  
                 if(name.equals("Left"))
                 {
+                    
                     left = isPressed;
                     hero.lookAt(new Vector3f(-1, 0, 0), Vector3f.UNIT_X);
                 }
                 else if(name.equals("Right"))
                 {
+                    
                     right = isPressed;
                     hero.lookAt(new Vector3f(1, 0, 0), Vector3f.UNIT_X);
                 }
                 else if(name.equals("Forward"))
                 {
+                    
                     forward = isPressed;
                     hero.lookAt(new Vector3f(0, 0, 1), Vector3f.UNIT_Z);
                 }
                 else if(name.equals("Backward"))
                 { 
+                    
                     backward = isPressed;
                     hero.lookAt(new Vector3f(0, 0, -1), Vector3f.UNIT_Z);
                 }
             }
+            else if(name.equals("Sprint") && isPressed)
+            {
+                kecepatan = 1f;
+            }
+            else if(name.equals("Sprint") && !isPressed)
+            {
+                kecepatan = 0.4f;
+            }
+            
         }
     };
 
@@ -343,9 +387,10 @@ implements PhysicsCollisionListener
     @Override
     public void simpleUpdate(float tpf) {
         //TODO: add update code
+        initGUI2D();
         walkDirection.zero();
-        Vector3f camDir = cam.getDirection().clone().multLocal(0.4f);
-        Vector3f camLeft = cam.getLeft().clone().multLocal(0.4f);
+        Vector3f camDir = cam.getDirection().clone().multLocal(kecepatan);
+        Vector3f camLeft = cam.getLeft().clone().multLocal(kecepatan);
         camDir.y = 0;
         camLeft.y = 0;        
         float airTime = 0;
@@ -368,7 +413,12 @@ implements PhysicsCollisionListener
         
         //Third Person
         if(walkDirection.length() > 0)
+        {
             herocontrol.setViewDirection(walkDirection);
+            //notiftext = "";
+        }
+        
+        
     }
 
     @Override
@@ -393,7 +443,13 @@ implements PhysicsCollisionListener
                 )
            )
         {
-            //herocontrol.setPhysicsLocation(new Vector3f(-370, 20, -380));
+            herocontrol.setPhysicsLocation(new Vector3f(-370, 20, -380));
+            notiftext = "MATI KARENA LAVA";
+        }
+        else
+        {
+            notiftext = "";
+            initGUI2D();
         }
     }
 }
