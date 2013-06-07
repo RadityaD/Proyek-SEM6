@@ -59,7 +59,7 @@ implements PhysicsCollisionListener
     TerrainQuad terrain;
     TerrainQuad terrain1;
     float kecepatan = 0.4f;
-    Spatial hero, landscape, platform1, platform2, platform3, platform4, rudal;
+    Spatial hero, landscape, rudal, platform1, platform2, platform3, platform4;
     CharacterControl herocontrol;
     BulletAppState bulletAppState = new BulletAppState();
     RigidBodyControl terrain_control1, rudalc, terrain_control2, platfrm1, platfrm2, platfrm3, platfrm4;
@@ -196,15 +196,19 @@ implements PhysicsCollisionListener
     {
         stateManager.attach(bulletAppState);
         
-        rudal = assetManager.loadModel("Scenes/Rudal/Rudal.mesh.xml");
-        Texture rudall = assetManager.loadTexture("");
-        Material rudaal = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        rudaal.setTexture("ColorMap", rudall);
-        rudal.setMaterial(rudaal);
+        Texture rudal_tex = assetManager.loadTexture("Textures/texrudal.jpg");
+        Material rudal_mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         rudalc = new RigidBodyControl(0);
-        rudalc.setKinematic(true);
+        //rudal.setLocalTranslation(-370, 5, -380);
+        //rudal_mat.setTexture("ColorMap", rudal_tex); 
+        
+        rudal = assetManager.loadModel("Scenes/Rudal/Rudal.mesh.xml");
+        rudal_mat.setColor("Color", ColorRGBA.Blue);
+        rudal.setMaterial(rudal_mat);
+        rudal.addControl(rudalc);                     
+        rudalc.setKinematic(true);                              
+        bulletAppState.getPhysicsSpace().add(rudalc);
         rootNode.attachChild(rudal);
-        bulletAppState.getPhysicsSpace().add(rudal);
     }
     void initTiren()
     {
@@ -302,6 +306,8 @@ implements PhysicsCollisionListener
         //initAnim();
         //Panggil Fungsi Hero
         initHero();
+        
+        initRudal();
         //Panggil Fungsi Mapping Tombol
         initKeys();
   
@@ -432,6 +438,14 @@ implements PhysicsCollisionListener
             //notiftext = "";
         }
         
+        float x, y, z;
+        x = hero.getLocalTranslation().x;
+        y = hero.getLocalTranslation().y;
+        z = hero.getLocalTranslation().z;
+        //rudalc.setPhysicsLocation(new Vector3f(x+1f*tpf, y+1f*tpf, z+1f*tpf));
+        //rudal.move(x*tpf, y*tpf, z*tpf);
+        //rudal.move(1*tpf, 0, 0);
+        //rudal.lookAt(hero.getLocalTranslation(), hero.getLocalTranslation());
         
     }
 
