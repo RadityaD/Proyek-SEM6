@@ -59,10 +59,10 @@ implements PhysicsCollisionListener
     TerrainQuad terrain;
     TerrainQuad terrain1;
     float kecepatan = 0.4f;
-    Spatial hero, landscape, platform1, platform2, platform3, platform4;
+    Spatial hero, landscape, platform1, platform2, platform3, platform4, rudal;
     CharacterControl herocontrol;
     BulletAppState bulletAppState = new BulletAppState();
-    RigidBodyControl terrain_control1, terrain_control2, platfrm1, platfrm2, platfrm3, platfrm4;
+    RigidBodyControl terrain_control1, rudalc, terrain_control2, platfrm1, platfrm2, platfrm3, platfrm4;
     String notiftext = "";
     AnimControl animctrl;
     AnimChannel animchn1, animchn2, animchn3;
@@ -192,6 +192,20 @@ implements PhysicsCollisionListener
         /*## END-OF-PLATFORM-4 ##*/
     }
     
+    void initRudal()
+    {
+        stateManager.attach(bulletAppState);
+        
+        rudal = assetManager.loadModel("Scenes/Rudal/Rudal.mesh.xml");
+        Texture rudall = assetManager.loadTexture("");
+        Material rudaal = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        rudaal.setTexture("ColorMap", rudall);
+        rudal.setMaterial(rudaal);
+        rudalc = new RigidBodyControl(0);
+        rudalc.setKinematic(true);
+        rootNode.attachChild(rudal);
+        bulletAppState.getPhysicsSpace().add(rudal);
+    }
     void initTiren()
     {
         stateManager.attach(bulletAppState);
