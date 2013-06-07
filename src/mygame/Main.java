@@ -206,7 +206,11 @@ implements PhysicsCollisionListener
         rudal_mat.setColor("Color", ColorRGBA.Blue);
         rudal.setMaterial(rudal_mat);
         rudal.addControl(rudalc);                     
-        rudalc.setKinematic(true);                              
+        rudalc.setKinematic(true);  
+        
+        rudal.setLocalScale(2f);
+        rudal.setLocalTranslation(-390, 5, -380);
+        
         bulletAppState.getPhysicsSpace().add(rudalc);
         rootNode.attachChild(rudal);
     }
@@ -442,10 +446,7 @@ implements PhysicsCollisionListener
         x = hero.getLocalTranslation().x;
         y = hero.getLocalTranslation().y;
         z = hero.getLocalTranslation().z;
-        //rudalc.setPhysicsLocation(new Vector3f(x+1f*tpf, y+1f*tpf, z+1f*tpf));
-        //rudal.move(x*tpf, y*tpf, z*tpf);
-        //rudal.move(1*tpf, 0, 0);
-        //rudal.lookAt(hero.getLocalTranslation(), hero.getLocalTranslation());
+        rudal.move(x*tpf, y*tpf, z*tpf);
         
     }
 
