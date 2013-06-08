@@ -13,6 +13,7 @@ import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.input.ChaseCamera;
 import com.jme3.input.KeyInput;
@@ -46,7 +47,7 @@ import java.util.logging.Logger;
 import sun.rmi.transport.Target;
 
 // Raditya Danang - 1401077453
-// Albert - 
+// Albert - 141076381
 
 public class Main extends SimpleApplication 
 implements PhysicsCollisionListener
@@ -59,6 +60,7 @@ implements PhysicsCollisionListener
     TerrainQuad terrain;
     TerrainQuad terrain1;
     float kecepatan = 0.4f;
+    BitmapText notif;
     Spatial hero, landscape, rudal, platform1, platform2, platform3, platform4;
     CharacterControl herocontrol;
     BulletAppState bulletAppState = new BulletAppState();
@@ -77,7 +79,7 @@ implements PhysicsCollisionListener
         Main app = new Main();
         app.showSettings = false;
         app.settings = new AppSettings(true);
-        app.settings.setResolution(800, 600);
+        app.settings.setResolution(640, 480);
         app.start();
     }
     
@@ -101,6 +103,7 @@ implements PhysicsCollisionListener
         herocontrol = new CharacterControl(capsuleCollisionShape, 0.05f);
         hero.addControl(herocontrol);
         herocontrol.setJumpSpeed(25);
+        //herocontrol.setPhysicsLocation(new Vector3f(-370, 20, -380));
         bulletAppState.getPhysicsSpace().add(herocontrol);
         
         //Hero Animation
@@ -208,8 +211,9 @@ implements PhysicsCollisionListener
         rudal.addControl(rudalc);                     
         rudalc.setKinematic(true);  
         
-        rudal.setLocalScale(2f);
+        rudal.setLocalScale(4f);
         rudal.setLocalTranslation(-390, 5, -380);
+        //rudalc.setPhysicsLocation(new Vector3f(-390, 5, -380));
         
         bulletAppState.getPhysicsSpace().add(rudalc);
         rootNode.attachChild(rudal);
@@ -286,12 +290,11 @@ implements PhysicsCollisionListener
     void initGUI2D()
     {
         guiFont = assetManager.loadFont("Interface/Fonts/8BITWONDER.fnt");
-        BitmapText notif = new BitmapText(guiFont);
+        notif = new BitmapText(guiFont);
         notif.setText(notiftext);
         notif.setColor(ColorRGBA.White);
-        notif.setLocalTranslation(settings.getWidth()/2, settings.getHeight()/2, 0);
+        notif.setLocalTranslation(settings.getWidth()/2, settings.getHeight()/2, 0);    
         
-        guiNode.attachChild(notif);
     }
 
     @Override
@@ -442,12 +445,37 @@ implements PhysicsCollisionListener
             //notiftext = "";
         }
         
-        float x, y, z;
-        x = hero.getLocalTranslation().x;
-        y = hero.getLocalTranslation().y;
-        z = hero.getLocalTranslation().z;
-        rudal.move(x*tpf, y*tpf, z*tpf);
+        float x, y, z, x1, y1, z1;
+        x = herocontrol.getPhysicsLocation().x;
+        y = herocontrol.getPhysicsLocation().y;
+        z = herocontrol.getPhysicsLocation().z;
+        //x1 = hero.getLocalTranslation().x;
+        //y1 = hero.getLocalTranslation().y;
+        //z1 = hero.getLocalTranslation().z; 
         
+        x1 = rudalc.getPhysicsLocation().x;
+        y1 = rudalc.getPhysicsLocation().y;
+        z1 = rudalc.getPhysicsLocation().z;
+        float moveX=0, moveY=0, moveZ=0;
+        
+        if (x1 > x)
+            moveX=-1;
+        else if (x1<x)
+            moveX=+1;
+        if (y1 > y)
+            moveY=-1;
+        else if (y1<y)
+            moveY=+1;
+        if (z1 > z)
+            moveZ=-1;
+        else if (z1<z)
+            moveZ=+1;
+        
+        
+        //rudalc.setPhysicsLocation(new Vector3f(x*tpf*0.005f, y*tpf*0.005f, z*tpf*0.005f));
+        rudal.move(moveX*tpf, moveY*tpf, moveZ*tpf);
+        //rudal.setLocalTranslation(x1, y1, z1);
+        System.out.println("x: " + rudal.getLocalTranslation().x);
     }
 
     @Override
@@ -458,6 +486,9 @@ implements PhysicsCollisionListener
     public void collision(PhysicsCollisionEvent event) {
         fpsText.setText(event.getNodeA().getName() + 
                 " VS "+ event.getNodeB().getName());
+        
+      
+        
         if(
                 (
                 event.getNodeA().getName().equals("Sinbad-ogremesh") 
@@ -474,11 +505,49 @@ implements PhysicsCollisionListener
         {
             herocontrol.setPhysicsLocation(new Vector3f(-370, 20, -380));
             notiftext = "MATI KARENA LAVA";
+            guiNode.attachChild(notif);
         }
-        else
+        else if(
+                    (
+                    event.getNodeA().getName().equals("Sinbad-ogremesh") 
+                    && 
+                    event.getNodeB().getName().equals("Rudal-ogremesh")
+                    )
+                    ||
+                    (
+                    event.getNodeB().getName().equals("Sinbad-ogremesh") 
+                    && 
+                    event.getNodeA().getName().equals("Rudal-ogremesh")
+                    )
+                )
         {
-            notiftext = "";
-            initGUI2D();
+            notiftext = "MATI KENA RUDAL";
+            herocontrol.setPhysicsLocation(new Vector3f(-370, 20, -380));
+            rudal.setLocalTranslation(-390, 5, -380);
+            guiNode.attachChild(notif);
         }
+        
+        else if(
+                    (
+                    event.getNodeA().getName().equals("Sinbad-ogremesh") 
+                    && 
+                    event.getNodeB().getName().equals("Platform1-ogremesh")
+                    )
+                    ||
+                    (
+                    event.getNodeB().getName().equals("Sinbad-ogremesh") 
+                    && 
+                    event.getNodeA().getName().equals("Platform1-ogremesh")
+                    )
+                )
+        {
+            
+            notiftext = "";
+            //notif.setText(notiftext);
+            guiNode.detachChild(notif);
+        }
+        
     }
+
+    
 }
