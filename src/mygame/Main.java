@@ -61,11 +61,11 @@ implements PhysicsCollisionListener
     float kecepatan = 0.4f;
     BitmapText notif;
     Spatial hero, landscape, rudal, platform1, platform2, platform3, platform4, platform5, platform6, 
-            platform7, platform8, platform9;
+            platform7, platform8, platform9, platform10, platform11, platform12, FinishPlatform;
     CharacterControl herocontrol;
     BulletAppState bulletAppState = new BulletAppState();
     RigidBodyControl terrain_control1, rudalc, terrain_control2, platfrm1, platfrm2, platfrm3, platfrm4,
-            platfrm5, platfrm6, platfrm7, platfrm8, platfrm9;
+            platfrm5, platfrm6, platfrm7, platfrm8, platfrm9, platfrm10, platfrm11, platfrm12, FinishPlat;
     String notiftext = "";
     AnimControl animctrl;
     AnimChannel animchn1, animchn2, animchn3;
@@ -275,6 +275,35 @@ implements PhysicsCollisionListener
         bulletAppState.getPhysicsSpace().add(platfrm9);
         /*## END-OF-PLATFORM-9 ##*/
         
+        /*## PLATFORM-10 ##*/
+        //Setting Spatial
+        platform10 = assetManager.loadModel("Scenes/Platform1/Platform1.mesh.xml");
+        //platform1.setMaterial(matplat);
+        platform10.scale(8f);
+        platform10.setLocalTranslation(25, 5, -50);
+        
+        //Physic
+        platfrm10 = new RigidBodyControl(0);
+        platform10.addControl(platfrm10);
+        
+        rootNode.attachChild(platform10);
+        bulletAppState.getPhysicsSpace().add(platfrm10);
+        /*## END-OF-PLATFORM-10 ##*/
+        
+        /*## FINISH-PLATFORM ##*/
+        //Setting Spatial
+        FinishPlatform = assetManager.loadModel("Scenes/FinishPlatform/FinishPlatform.mesh.xml");
+        //platform1.setMaterial(matplat);
+        FinishPlatform.scale(8f);
+        FinishPlatform.setLocalTranslation(25, 5, -50);
+        
+        //Physic
+        FinishPlat = new RigidBodyControl(0);
+        FinishPlatform.addControl(FinishPlat);
+        
+        rootNode.attachChild(FinishPlatform);
+        bulletAppState.getPhysicsSpace().add(FinishPlat);
+        /*## END-OF-FINISH-PLATFORM ##*/
         
     }
     
@@ -412,10 +441,7 @@ implements PhysicsCollisionListener
         AudioNode sound = new AudioNode(assetManager, "Sound/Environment/Nature.ogg");
         sound.setVolume(30f);
         sound.setLooping(true);
-        sound.play();*/
-        
-       
-                
+        sound.play();*/         
     }
     
     ActionListener actionListener = new ActionListener() {
@@ -498,8 +524,8 @@ implements PhysicsCollisionListener
     @Override
     public void simpleUpdate(float tpf) {
         //TODO: add update code 
-        for(String nama : hero.getControl(AnimControl.class).getAnimationNames())
-            System.out.println(nama);
+        /*for(String nama : hero.getControl(AnimControl.class).getAnimationNames())
+            System.out.println(nama);*/
         hero.getControl(AnimControl.class).getAnimationNames();
         walkDirection.zero();
         Vector3f camDir = cam.getDirection().clone().multLocal(kecepatan);
@@ -646,9 +672,9 @@ implements PhysicsCollisionListener
                     )
                 )
         {
-            guiNode.detachChild(notif);
-            notiftext = "HINT PRESS SHIFT TO SPRINT";
-            initGUI2D();
+            //guiNode.detachChild(notif);
+            //notiftext = "HINT PRESS SHIFT TO SPRINT";
+            //initGUI2D();
         }
         else
         {
