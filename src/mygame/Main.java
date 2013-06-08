@@ -53,7 +53,6 @@ public class Main extends SimpleApplication
 implements PhysicsCollisionListener
 {
     
-    
     //Deklarasi
     Material mat_terrain;
     Material mat_terrain1;
@@ -293,14 +292,14 @@ implements PhysicsCollisionListener
         notif = new BitmapText(guiFont);
         notif.setText(notiftext);
         notif.setColor(ColorRGBA.White);
-        notif.setLocalTranslation(settings.getWidth()/2, settings.getHeight()/2, 0);
+        notif.setLocalTranslation(settings.getWidth()/3.5f, settings.getHeight()/2, 0);
         guiNode.attachChild(notif);
     }
 
     @Override
     public void simpleInitApp() {
         
-        //Warnar Background Viewport
+        //Warna Background Viewport
         viewPort.setBackgroundColor(ColorRGBA.Cyan);
         //Camera Move Speed
         flyCam.setMoveSpeed(1000f);
@@ -469,7 +468,7 @@ implements PhysicsCollisionListener
         
         
         //rudalc.setPhysicsLocation(new Vector3f(x*tpf*0.005f, y*tpf*0.005f, z*tpf*0.005f));
-        rudal.move(moveX*tpf*10f, moveY*tpf*10f, moveZ*tpf*10f);
+        rudal.move(moveX*tpf*3, moveY*tpf*3, moveZ*tpf*3);
         rudal.lookAt(hero.getLocalTranslation(), hero.getLocalTranslation());
         //rudal.setLocalTranslation(x1, y1, z1);
         //System.out.println("x: " + rudal.getLocalTranslation().x);
@@ -522,7 +521,7 @@ implements PhysicsCollisionListener
             
             herocontrol.setPhysicsLocation(new Vector3f(-370, 20, -380));
             rudal.setLocalTranslation(-390, 5, -380);
-            notiftext = "MATI KENA RUDAL";
+            notiftext = "MATI KARENA RUDAL";
             guiNode.detachChild(notif);
             initGUI2D();
         }
@@ -543,7 +542,6 @@ implements PhysicsCollisionListener
         {
             
             notiftext = "";
-            //notif.setText(notiftext);
             guiNode.detachChild(notif);
         }
         
