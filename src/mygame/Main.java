@@ -60,10 +60,12 @@ implements PhysicsCollisionListener
     TerrainQuad terrain1;
     float kecepatan = 0.4f;
     BitmapText notif;
-    Spatial hero, landscape, rudal, platform1, platform2, platform3, platform4;
+    Spatial hero, landscape, rudal, platform1, platform2, platform3, platform4, platform5, platform6, 
+            platform7, platform8, platform9;
     CharacterControl herocontrol;
     BulletAppState bulletAppState = new BulletAppState();
-    RigidBodyControl terrain_control1, rudalc, terrain_control2, platfrm1, platfrm2, platfrm3, platfrm4;
+    RigidBodyControl terrain_control1, rudalc, terrain_control2, platfrm1, platfrm2, platfrm3, platfrm4,
+            platfrm5, platfrm6, platfrm7, platfrm8, platfrm9;
     String notiftext = "";
     AnimControl animctrl;
     AnimChannel animchn1, animchn2, animchn3;
@@ -133,7 +135,7 @@ implements PhysicsCollisionListener
         /*## PLATFORM-1 ##*/
         //Setting Spatial
         platform1 = assetManager.loadModel("Scenes/Platform1/Platform1.mesh.xml");
-        platform1.setMaterial(matplat);
+        //platform1.setMaterial(matplat);
         platform1.scale(5f);
         platform1.setLocalTranslation(-370, -3, -380);
         
@@ -148,7 +150,7 @@ implements PhysicsCollisionListener
         /*## PLATFORM-2 ##*/
         //Setting Spatial
         platform2 = assetManager.loadModel("Scenes/Platform2/Platform2.mesh.xml");
-        platform2.setMaterial(matplat);
+        //platform2.setMaterial(matplat);
         platform2.scale(5f);
         platform2.setLocalTranslation(-330, -3, -360);
         platform2.setLocalRotation(new Quaternion(5, 0, 1, 0));
@@ -164,7 +166,7 @@ implements PhysicsCollisionListener
         /*## PLATFORM-3 ##*/
         //Setting Spatial
         platform3 = assetManager.loadModel("Scenes/Platform2/Platform2.mesh.xml");
-        platform3.setMaterial(matplat);
+        //platform3.setMaterial(matplat);
         platform3.scale(5f);
         platform3.setLocalTranslation(-270, -3, -340);
         platform3.setLocalRotation(new Quaternion(7, 0, 1, 0));
@@ -180,7 +182,7 @@ implements PhysicsCollisionListener
         /*## PLATFORM-4 ##*/
         //Setting Spatial
         platform4 = assetManager.loadModel("Scenes/Platform3/Platform3.mesh.xml");
-        platform4.setMaterial(matplat);
+        //platform4.setMaterial(matplat);
         platform4.scale(5f);
         platform4.setLocalTranslation(-200, 5, -300);
         platform4.setLocalRotation(new Quaternion(0, 10, 0, 10));
@@ -192,6 +194,88 @@ implements PhysicsCollisionListener
         rootNode.attachChild(platform4);
         bulletAppState.getPhysicsSpace().add(platfrm4);
         /*## END-OF-PLATFORM-4 ##*/
+        
+        /*## PLATFORM-5 ##*/
+        //Setting Spatial
+        platform5 = assetManager.loadModel("Scenes/Platform3/Platform3.mesh.xml");
+        //platform4.setMaterial(matplat);
+        platform5.scale(3f);
+        platform5.setLocalTranslation(-150, 1, -280);
+        platform5.setLocalRotation(new Quaternion(0, 10, 0, 10));
+        
+        //Physic
+        platfrm5 = new RigidBodyControl(0);
+        platform5.addControl(platfrm5);
+        
+        rootNode.attachChild(platform5);
+        bulletAppState.getPhysicsSpace().add(platfrm5);
+        /*## END-OF-PLATFORM-5 ##*/
+        
+         /*## PLATFORM-6 ##*/
+        //Setting Spatial
+        platform6 = assetManager.loadModel("Scenes/Platform3/Platform3.mesh.xml");
+        //platform4.setMaterial(matplat);
+        platform6.scale(5f);
+        platform6.setLocalTranslation(-120, 7, -240);
+        platform6.setLocalRotation(new Quaternion(0, 10, 0, 10));
+        
+        //Physic
+        platfrm6 = new RigidBodyControl(0);
+        platform6.addControl(platfrm6);
+        
+        rootNode.attachChild(platform6);
+        bulletAppState.getPhysicsSpace().add(platfrm6);
+        /*## END-OF-PLATFORM-6 ##*/
+        
+        /*## PLATFORM-7 ##*/
+        //Setting Spatial
+        platform7 = assetManager.loadModel("Scenes/Platform2/Platform2.mesh.xml");
+        //platform3.setMaterial(matplat);
+        platform7.scale(5f);
+        platform7.setLocalTranslation(-80, 17, -180);
+        platform7.setLocalRotation(new Quaternion(0, 7, 0, 3));
+        
+        //Physic
+        platfrm7 = new RigidBodyControl(0);
+        platform7.addControl(platfrm7);
+        
+        rootNode.attachChild(platform7);
+        bulletAppState.getPhysicsSpace().add(platfrm7);
+        /*## END-OF-PLATFORM-7 ##*/
+        
+        /*## PLATFORM-8 ##*/
+        //Setting Spatial
+        platform8 = assetManager.loadModel("Scenes/Platform2/Platform2.mesh.xml");
+        //platform3.setMaterial(matplat);
+        platform8.scale(5f);
+        platform8.setLocalTranslation(-50, 26, -150);
+        platform8.setLocalRotation(new Quaternion(0, 7, 0, 3));
+        
+        //Physic
+        platfrm8 = new RigidBodyControl(0);
+        platform8.addControl(platfrm8);
+        
+        rootNode.attachChild(platform8);
+        bulletAppState.getPhysicsSpace().add(platfrm8);
+        /*## END-OF-PLATFORM-8 ##*/
+        
+        /*## PLATFORM-9 ##*/
+        //Setting Spatial
+        platform9 = assetManager.loadModel("Scenes/Platform2/Platform2.mesh.xml");
+        //platform3.setMaterial(matplat);
+        platform9.scale(5f);
+        platform9.setLocalTranslation(-15, 35, -120);
+        platform9.setLocalRotation(new Quaternion(0, 7, 0, 3));
+        
+        //Physic
+        platfrm9 = new RigidBodyControl(0);
+        platform9.addControl(platfrm9);
+        
+        rootNode.attachChild(platform9);
+        bulletAppState.getPhysicsSpace().add(platfrm9);
+        /*## END-OF-PLATFORM-9 ##*/
+        
+        
     }
     
     void initRudal()
@@ -341,7 +425,7 @@ implements PhysicsCollisionListener
             if(name.equals("Jump"))
             {
                 herocontrol.jump();
-                //animchn3.setAnim("JumpLoop");                
+                //animchn3.setAnim("JumpStart");                
             }
             else if(name.equals("Left") || name.equals("Right") || name.equals("Forward") || name.equals("Backward"))
             {
@@ -397,13 +481,14 @@ implements PhysicsCollisionListener
 
         public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) 
         {
-            if(animName.equals("JumpLoop"))
+            /*
+            if(animName.equals("JumpStart"))
             {
                 animchn1.setAnim("IdleTop");
                 animchn2.setAnim("IdleBase");
-            }
+            }*/
+            
         }
-
         public void onAnimChange(AnimControl control, AnimChannel channel, String animName) 
         {
             
@@ -413,6 +498,9 @@ implements PhysicsCollisionListener
     @Override
     public void simpleUpdate(float tpf) {
         //TODO: add update code 
+        for(String nama : hero.getControl(AnimControl.class).getAnimationNames())
+            System.out.println(nama);
+        hero.getControl(AnimControl.class).getAnimationNames();
         walkDirection.zero();
         Vector3f camDir = cam.getDirection().clone().multLocal(kecepatan);
         Vector3f camLeft = cam.getLeft().clone().multLocal(kecepatan);
@@ -542,6 +630,28 @@ implements PhysicsCollisionListener
         {
             
             notiftext = "";
+            guiNode.detachChild(notif);
+        }
+        else if(
+                    (
+                    event.getNodeA().getName().equals("Sinbad-ogremesh") 
+                    && 
+                    event.getNodeB().getName().equals("Platform2-ogremesh")
+                    )
+                    ||
+                    (
+                    event.getNodeB().getName().equals("Sinbad-ogremesh") 
+                    && 
+                    event.getNodeA().getName().equals("Platform2-ogremesh")
+                    )
+                )
+        {
+            guiNode.detachChild(notif);
+            notiftext = "HINT PRESS SHIFT TO SPRINT";
+            initGUI2D();
+        }
+        else
+        {
             guiNode.detachChild(notif);
         }
         
