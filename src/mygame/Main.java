@@ -200,14 +200,14 @@ implements PhysicsCollisionListener
         stateManager.attach(bulletAppState);
         
         Texture rudal_tex = assetManager.loadTexture("Textures/texrudal.jpg");
-        Material rudal_mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        //Material rudal_mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         rudalc = new RigidBodyControl(0);
         //rudal.setLocalTranslation(-370, 5, -380);
         //rudal_mat.setTexture("ColorMap", rudal_tex); 
         
         rudal = assetManager.loadModel("Scenes/Rudal/Rudal.mesh.xml");
-        rudal_mat.setColor("Color", ColorRGBA.Blue);
-        rudal.setMaterial(rudal_mat);
+        //rudal_mat.setColor("Color", ColorRGBA.Blue);
+        //rudal.setMaterial(rudal_mat);
         rudal.addControl(rudalc);                     
         rudalc.setKinematic(true);  
         
@@ -293,8 +293,8 @@ implements PhysicsCollisionListener
         notif = new BitmapText(guiFont);
         notif.setText(notiftext);
         notif.setColor(ColorRGBA.White);
-        notif.setLocalTranslation(settings.getWidth()/2, settings.getHeight()/2, 0);    
-        
+        notif.setLocalTranslation(settings.getWidth()/2, settings.getHeight()/2, 0);
+        guiNode.attachChild(notif);
     }
 
     @Override
@@ -317,8 +317,8 @@ implements PhysicsCollisionListener
         initRudal();
         //Panggil Fungsi Mapping Tombol
         initKeys();
-  
-        flyCam.setEnabled(false);
+        initGUI2D();
+        flyCam.setEnabled(false); 
         ChaseCamera chaseCam = new ChaseCamera(cam, hero, inputManager);
         //chaseCam.setTrailingEnabled(true);
         
@@ -413,8 +413,7 @@ implements PhysicsCollisionListener
     
     @Override
     public void simpleUpdate(float tpf) {
-        //TODO: add update code
-        initGUI2D();
+        //TODO: add update code 
         walkDirection.zero();
         Vector3f camDir = cam.getDirection().clone().multLocal(kecepatan);
         Vector3f camLeft = cam.getLeft().clone().multLocal(kecepatan);
@@ -442,22 +441,19 @@ implements PhysicsCollisionListener
         if(walkDirection.length() > 0)
         {
             herocontrol.setViewDirection(walkDirection);
-            //notiftext = "";
         }
         
         float x, y, z, x1, y1, z1;
         x = herocontrol.getPhysicsLocation().x;
         y = herocontrol.getPhysicsLocation().y;
-        z = herocontrol.getPhysicsLocation().z;
-        //x1 = hero.getLocalTranslation().x;
-        //y1 = hero.getLocalTranslation().y;
-        //z1 = hero.getLocalTranslation().z; 
+        z = herocontrol.getPhysicsLocation().z; 
         
         x1 = rudalc.getPhysicsLocation().x;
         y1 = rudalc.getPhysicsLocation().y;
         z1 = rudalc.getPhysicsLocation().z;
         float moveX=0, moveY=0, moveZ=0;
         
+        //Kondisi Rudal Supaya Ngejar Hero (thanks kk aslab udah dibantuin :D )
         if (x1 > x)
             moveX=-1;
         else if (x1<x)
@@ -473,9 +469,10 @@ implements PhysicsCollisionListener
         
         
         //rudalc.setPhysicsLocation(new Vector3f(x*tpf*0.005f, y*tpf*0.005f, z*tpf*0.005f));
-        rudal.move(moveX*tpf, moveY*tpf, moveZ*tpf);
+        rudal.move(moveX*tpf*10f, moveY*tpf*10f, moveZ*tpf*10f);
+        rudal.lookAt(hero.getLocalTranslation(), hero.getLocalTranslation());
         //rudal.setLocalTranslation(x1, y1, z1);
-        System.out.println("x: " + rudal.getLocalTranslation().x);
+        //System.out.println("x: " + rudal.getLocalTranslation().x);
     }
 
     @Override
@@ -488,7 +485,6 @@ implements PhysicsCollisionListener
                 " VS "+ event.getNodeB().getName());
         
       
-        
         if(
                 (
                 event.getNodeA().getName().equals("Sinbad-ogremesh") 
@@ -504,8 +500,10 @@ implements PhysicsCollisionListener
            )
         {
             herocontrol.setPhysicsLocation(new Vector3f(-370, 20, -380));
+            rudal.setLocalTranslation(-390, 5, -380);
+            guiNode.detachChild(notif);
             notiftext = "MATI KARENA LAVA";
-            guiNode.attachChild(notif);
+            initGUI2D();
         }
         else if(
                     (
@@ -521,10 +519,12 @@ implements PhysicsCollisionListener
                     )
                 )
         {
-            notiftext = "MATI KENA RUDAL";
+            
             herocontrol.setPhysicsLocation(new Vector3f(-370, 20, -380));
             rudal.setLocalTranslation(-390, 5, -380);
-            guiNode.attachChild(notif);
+            notiftext = "MATI KENA RUDAL";
+            guiNode.detachChild(notif);
+            initGUI2D();
         }
         
         else if(
