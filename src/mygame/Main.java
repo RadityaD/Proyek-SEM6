@@ -61,11 +61,11 @@ implements PhysicsCollisionListener
     float kecepatan = 0.4f;
     BitmapText notif;
     Spatial hero, landscape, rudal, platform1, platform2, platform3, platform4, platform5, platform6, 
-            platform7, platform8, platform9, platform10, platform11, platform12, FinishPlatform;
+            platform7, platform8, platform9, platform10, platform11, platform12, platform13, FinishPlatform;
     CharacterControl herocontrol;
     BulletAppState bulletAppState = new BulletAppState();
     RigidBodyControl terrain_control1, rudalc, terrain_control2, platfrm1, platfrm2, platfrm3, platfrm4,
-            platfrm5, platfrm6, platfrm7, platfrm8, platfrm9, platfrm10, platfrm11, platfrm12, FinishPlat;
+            platfrm5, platfrm6, platfrm7, platfrm8, platfrm9, platfrm10, platfrm11, platfrm12, platfrm13, FinishPlat;
     String notiftext = "";
     AnimControl animctrl;
     AnimChannel animchn1, animchn2, animchn3;
@@ -322,6 +322,23 @@ implements PhysicsCollisionListener
         rootNode.attachChild(platform12);
         bulletAppState.getPhysicsSpace().add(platfrm12);
         /*## END-OF-PLATFORM-12 ##*/
+        
+        /*## PLATFORM-13 ##*/
+        //Setting Spatial
+        platform13 = assetManager.loadModel("Scenes/Platform4/Platform4.mesh.xml");
+        //platform4.setMaterial(matplat);
+        platform13.scale(5f);
+        platform13.setLocalTranslation(330, 10, 240);
+        //platform13.setLocalRotation(new Quaternion(0, 90, 0, -40));
+        
+        //Physic
+        platfrm13 = new RigidBodyControl(0);
+        platform13.addControl(platfrm13);
+        platfrm13.setKinematic(true);
+        
+        rootNode.attachChild(platform13);
+        bulletAppState.getPhysicsSpace().add(platfrm13);
+        /*## END-OF-PLATFORM-13 ##*/
         
         /*## FINISH-PLATFORM ##*/
         //Setting Spatial
@@ -623,34 +640,90 @@ implements PhysicsCollisionListener
         //rudal.setLocalTranslation(x1, y1, z1);
         //System.out.println("x: " + rudal.getLocalTranslation().x);
         
-        int i = 0;
-        float movepx=0, movepy=0, movepz=0;
+        float px1, py1, pz1, px2, py2, pz2, px3, py3, pz3;
+        float movePX1 = 0, movePY1 = 0, movePZ1 = 0;
+        px1 = platfrm12.getPhysicsLocation().x;
+        py1 = platfrm12.getPhysicsLocation().y;
+        pz1 = platfrm12.getPhysicsLocation().z;
         
-        if(i <= 0)
+        px2 = platfrm13.getPhysicsLocation().x;
+        py2 = platfrm13.getPhysicsLocation().y;
+        pz2 = platfrm13.getPhysicsLocation().z;
+        
+        px3 = platfrm11.getPhysicsLocation().x;
+        py3 = platfrm11.getPhysicsLocation().y;
+        pz3 = platfrm11.getPhysicsLocation().z;
+        
+        /*
+        if(px1 < px2)
         {
             do
             {
-                movepx=+1;
-                movepz=+1;
-                i++;
+                movePX1=+1;
             }
-            while(i <= 20);
+            while(px1 < px2);
         }
-        else if(i >= 20)
+        else if(px1 >= px2)
         {
             do
             {
-                movepx=-1;
-                movepz=-1;
-                i--;
+                movePX1=-1;
             }
-            while(i <= 0);
+            while(px1 > px3);   
         }
         
-        for(i = 1; i < 0; i++)
-        System.out.println("i :"+i);
-        platform12.move(movepx, movepy, movepz);
+        if(pz1 < pz2)
+        {
+            do
+            {
+                movePZ1=+1;
+            }
+            while(pz1 < pz2);
+        }
+        else if(pz1 >= pz2)
+        {
+            do
+            {
+                movePZ1=-1;
+            }
+            while(pz1 > pz3);   
+        }
         
+        if(px1 >= px2 && pz1 >= pz2)
+        {
+            if(px1 > px3)
+            {
+                movePX1 =-1;
+            }
+            else if(px1 < px3)
+            {
+                movePZ1 =+1;
+            }
+        }
+        else if(px1 < px2 && pz1 < pz2)
+        {
+                if(px1 > px2)
+            {
+                movePX1 =- 1;
+            }
+            else if(px1 < px2)
+            {
+                movePX1 =+ 1;
+            }
+        
+            if(pz1 > pz2)
+            {
+                movePZ1 =- 1;
+            }
+            else if(pz1 < pz2)
+            {
+                movePZ1 =+ 1;
+            }
+        }*/
+        
+        platform12.move(movePX1*tpf*10, 0, movePZ1*tpf*10);
+        System.out.println("x :"+px1);
+        System.out.println("xpt13 :"+px2);
     }
 
     @Override
@@ -677,7 +750,7 @@ implements PhysicsCollisionListener
                 )
            )
         {
-            herocontrol.setPhysicsLocation(new Vector3f(-370, 20, -380));
+            //herocontrol.setPhysicsLocation(new Vector3f(-370, 20, -380));
             rudal.setLocalTranslation(-390, 5, -380);
             guiNode.detachChild(notif);
             notiftext = "MATI KARENA LAVA";
