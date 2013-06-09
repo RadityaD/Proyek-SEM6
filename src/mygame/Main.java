@@ -290,12 +290,46 @@ implements PhysicsCollisionListener
         bulletAppState.getPhysicsSpace().add(platfrm10);
         /*## END-OF-PLATFORM-10 ##*/
         
+        /*## PLATFORM-11 ##*/
+        //Setting Spatial
+        platform11 = assetManager.loadModel("Scenes/Platform3/Platform3.mesh.xml");
+        //platform4.setMaterial(matplat);
+        platform11.scale(5f);
+        platform11.setLocalTranslation(60, 10, -10);
+        //platform11.setLocalRotation(new Quaternion(0, 10, 0, 10));
+        
+        //Physic
+        platfrm11 = new RigidBodyControl(0);
+        platform11.addControl(platfrm11);
+        
+        rootNode.attachChild(platform11);
+        bulletAppState.getPhysicsSpace().add(platfrm11);
+        /*## END-OF-PLATFORM-11 ##*/
+        
+        /*## PLATFORM-12 ##*/
+        //Setting Spatial
+        platform12 = assetManager.loadModel("Scenes/Platform4/Platform4.mesh.xml");
+        //platform4.setMaterial(matplat);
+        platform12.scale(5f);
+        platform12.setLocalTranslation(100, 10, 10);
+        //platform12.setLocalRotation(new Quaternion(0, 10, 0, 10));
+        
+        //Physic
+        platfrm12 = new RigidBodyControl(0);
+        platform12.addControl(platfrm12);
+        platfrm12.setKinematic(true);
+        
+        rootNode.attachChild(platform12);
+        bulletAppState.getPhysicsSpace().add(platfrm12);
+        /*## END-OF-PLATFORM-12 ##*/
+        
         /*## FINISH-PLATFORM ##*/
         //Setting Spatial
         FinishPlatform = assetManager.loadModel("Scenes/FinishPlatform/FinishPlatform.mesh.xml");
         //platform1.setMaterial(matplat);
         FinishPlatform.scale(8f);
-        FinishPlatform.setLocalTranslation(25, 5, -50);
+        FinishPlatform.setLocalTranslation(350, 100, 270);
+        FinishPlatform.setLocalRotation(new Quaternion(0, 90, 0, -40));
         
         //Physic
         FinishPlat = new RigidBodyControl(0);
@@ -442,6 +476,8 @@ implements PhysicsCollisionListener
         sound.setVolume(30f);
         sound.setLooping(true);
         sound.play();*/         
+        
+        
     }
     
     ActionListener actionListener = new ActionListener() {
@@ -586,6 +622,35 @@ implements PhysicsCollisionListener
         rudal.lookAt(hero.getLocalTranslation(), hero.getLocalTranslation());
         //rudal.setLocalTranslation(x1, y1, z1);
         //System.out.println("x: " + rudal.getLocalTranslation().x);
+        
+        int i = 0;
+        float movepx=0, movepy=0, movepz=0;
+        
+        if(i <= 0)
+        {
+            do
+            {
+                movepx=+1;
+                movepz=+1;
+                i++;
+            }
+            while(i <= 20);
+        }
+        else if(i >= 20)
+        {
+            do
+            {
+                movepx=-1;
+                movepz=-1;
+                i--;
+            }
+            while(i <= 0);
+        }
+        
+        for(i = 1; i < 0; i++)
+        System.out.println("i :"+i);
+        platform12.move(movepx, movepy, movepz);
+        
     }
 
     @Override
