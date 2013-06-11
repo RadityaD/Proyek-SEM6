@@ -18,8 +18,10 @@ import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.input.ChaseCamera;
 import com.jme3.input.KeyInput;
+import com.jme3.input.MouseInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -40,6 +42,7 @@ import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
+import com.jme3.ui.Picture;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
 import java.awt.event.ActionEvent;
@@ -55,12 +58,15 @@ implements PhysicsCollisionListener
 {
     
     //Deklarasi
+    static Main app;
     AudioNode hurt1, hurt2, sound;
+    Button easy, medium, hard, exit;
+    Boolean isRunning = false, isEasy = false, isMedium = false, isHard = false;
     Material mat_terrain;
     Material mat_terrain1;
     TerrainQuad terrain;
     TerrainQuad terrain1;
-    float kecepatan = 0.4f;
+    float kecepatan = 0.4f, kecrudal = 3f;
     BitmapText notif;
     Spatial hero, landscape, rudal, platform1, platform2, platform3, platform4, platform5, platform6, 
             platform7, platform8, platform9, platform10, platform11, platform12, platform13, FinishPlatform;
@@ -79,10 +85,12 @@ implements PhysicsCollisionListener
     
 
     public static void main(String[] args) {
-        Main app = new Main();
+        app = new Main();
         app.showSettings = false;
         app.settings = new AppSettings(true);
-        app.settings.setResolution(640, 480);
+        app.settings.setResolution(800, 600);
+        app.settings.setVSync(false);
+        app.settings.setSamples(0);
         app.start();
     }
     
@@ -447,9 +455,10 @@ implements PhysicsCollisionListener
         inputManager.addMapping("Backward", new KeyTrigger(KeyInput.KEY_S));
         inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
         inputManager.addMapping("Sprint", new KeyTrigger(KeyInput.KEY_LSHIFT));
+        inputManager.addMapping("Click", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         
         inputManager.addListener(actionListener, 
-                "Left", "Right", "Forward", "Backward", "Jump", "Sprint");
+                "Left", "Right", "Forward", "Backward", "Jump", "Sprint", "Click");
     }
      
     void initGUI2D()
@@ -461,9 +470,63 @@ implements PhysicsCollisionListener
         notif.setLocalTranslation(settings.getWidth()/3.5f, settings.getHeight()/2, 0);
         guiNode.attachChild(notif);
     }
-
+    
+    void initMenu()
+    {
+        /*
+        Picture background = new Picture("Background");
+        background.setImage(assetManager, "Menu/bg.png", true);
+        background.setWidth(settings.getWidth());
+        background.setHeight(settings.getHeight());
+        background.setPosition(0, 0);
+        */
+        
+        flyCam.setEnabled(false);
+        //guiNode.attachChild(background);
+        inputManager.setCursorVisible(true);
+        
+        
+        initButton();
+    }
+    
+    void initButton()
+    {
+        easy = new Button(assetManager, "easy", "easybtn.png");
+        easy.setHoverImage("easybtnh.png");
+        easy.setWidth(150);
+        easy.setHeight(80);
+        easy.setPosition(20, 5);
+        
+        medium = new Button(assetManager, "medium", "mediumbtn.png");
+        medium.setHoverImage("mediumbtnh.png");
+        medium.setWidth(150);
+        medium.setHeight(80);
+        medium.setPosition(240, 5);
+        
+        hard = new Button(assetManager, "hard", "hardbtn.png");
+        hard.setHoverImage("hardbtnh.png");
+        hard.setWidth(150);
+        hard.setHeight(80);
+        hard.setPosition(450, 5);
+        
+        exit = new Button(assetManager, "exit", "exitbtn.png");
+        exit.setHoverImage("exitbtnh.png");
+        exit.setWidth(150);
+        exit.setHeight(72);
+        exit.setPosition(640, 8);
+        
+        guiNode.attachChild(easy);
+        guiNode.attachChild(medium);
+        guiNode.attachChild(hard);
+        guiNode.attachChild(exit);
+    }
+    
+       
+    
+     
     @Override
     public void simpleInitApp() {
+        
         
         //Warna Background Viewport
         viewPort.setBackgroundColor(ColorRGBA.Cyan);
@@ -505,64 +568,149 @@ implements PhysicsCollisionListener
         hurt2.setLooping(false);
         
         
+        //MENU GAGAL
+        //initMenu();
+        
     }
     
     ActionListener actionListener = new ActionListener() {
 
         public void onAction(String name, boolean isPressed, float tpf)
         {
-            if(name.equals("Jump"))
-            {
-                herocontrol.jump();
-                //animchn3.setAnim("JumpStart");                
-            }
-            else if(name.equals("Left") || name.equals("Right") || name.equals("Forward") || name.equals("Backward"))
-            {
-                if(animchn1.getAnimationName().equals("RunTop") == false && isPressed)
-                {
-                    animchn1.setAnim("RunTop");
-                    animchn2.setAnim("RunBase");
-                }
-                else if(animchn1.getAnimationName().equals("IdleTop") == false && !isPressed)
-                {
-                    animchn1.setAnim("IdleTop");
-                    animchn2.setAnim("IdleBase");
-                }
- 
-                if(name.equals("Left"))
-                {
+            //if(name.equals("Click") && !isPressed && !isRunning)
+            //{
                     
-                    left = isPressed;
-                    hero.lookAt(new Vector3f(-1, 0, 0), Vector3f.UNIT_X);
-                }
-                else if(name.equals("Right"))
+                if(name.equals("Jump"))
                 {
-                    
-                    right = isPressed;
-                    hero.lookAt(new Vector3f(1, 0, 0), Vector3f.UNIT_X);
+                    herocontrol.jump();
+                    //animchn3.setAnim("JumpStart");                
                 }
-                else if(name.equals("Forward"))
+                else if(name.equals("Left") || name.equals("Right") || name.equals("Forward") || name.equals("Backward"))
                 {
-                    
-                    forward = isPressed;
-                    hero.lookAt(new Vector3f(0, 0, 1), Vector3f.UNIT_Z);
+                    if(animchn1.getAnimationName().equals("RunTop") == false && isPressed)
+                    {
+                        animchn1.setAnim("RunTop");
+                        animchn2.setAnim("RunBase");
+                    }
+                    else if(animchn1.getAnimationName().equals("IdleTop") == false && !isPressed)
+                    {
+                        animchn1.setAnim("IdleTop");
+                        animchn2.setAnim("IdleBase");
+                    }
+
+                    if(name.equals("Left"))
+                    {
+
+                        left = isPressed;
+                        hero.lookAt(new Vector3f(-1, 0, 0), Vector3f.UNIT_X);
+                    }
+                    else if(name.equals("Right"))
+                    {
+
+                        right = isPressed;
+                        hero.lookAt(new Vector3f(1, 0, 0), Vector3f.UNIT_X);
+                    }
+                    else if(name.equals("Forward"))
+                    {
+
+                        forward = isPressed;
+                        hero.lookAt(new Vector3f(0, 0, 1), Vector3f.UNIT_Z);
+                    }
+                    else if(name.equals("Backward"))
+                    { 
+
+                        backward = isPressed;
+                        hero.lookAt(new Vector3f(0, 0, -1), Vector3f.UNIT_Z);
+                    }
                 }
-                else if(name.equals("Backward"))
-                { 
-                    
-                    backward = isPressed;
-                    hero.lookAt(new Vector3f(0, 0, -1), Vector3f.UNIT_Z);
+                else if(name.equals("Sprint") && isPressed)
+                {
+                    kecepatan = 1f;
                 }
-            }
-            else if(name.equals("Sprint") && isPressed)
-            {
-                kecepatan = 1f;
-            }
-            else if(name.equals("Sprint") && !isPressed)
-            {
-                kecepatan = 0.4f;
-            }
+                else if(name.equals("Sprint") && !isPressed)
+                {
+                    kecepatan = 0.4f;
+                }          
+                
+                /* GAGAL MASUKIN MENU
+                if(easy.isFocused)
+                    {
+                        guiNode.detachAllChildren();
+                        flyCam.setEnabled(true);
+                        inputManager.setCursorVisible(false);
+                        kecrudal = 3f;
+
+
+                        isRunning = true;
+
+                                    //Warna Background Viewport
+                        viewPort.setBackgroundColor(ColorRGBA.Cyan);
+                        //Camera Move Speed
+                        flyCam.setMoveSpeed(1000f);
+
+                        //Panggil Fungsi Terrain
+                        initTiren();
+
+                        initPlatforms();
+                        //Panggil Fungsi Animasi
+                        //initAnim();
+                        //Panggil Fungsi Hero
+                        initHero();
+
+                        initRudal();
+                        //Panggil Fungsi Mapping Tombol
+                        initKeys();
+                        initGUI2D();
+                        flyCam.setEnabled(false); 
+                        ChaseCamera chaseCam = new ChaseCamera(cam, hero, inputManager);
+                        //chaseCam.setTrailingEnabled(true);
+
+                        //bulletAppState.getPhysicsSpace().addCollisionListener(this);
+                        //chaseCam.setLookAtOffset(Vector3f.UNIT_Y.mult(10));
+                        //chaseCam.setLookAtOffset(Vector3f.UNIT_X.mult(20));
+
+                        sound = new AudioNode(assetManager, "Sounds/lavasound.ogg");
+                        sound.setVolume(30f);
+                        sound.setLooping(true);
+                        sound.play(); 
+
+                        hurt1 = new AudioNode(assetManager, "Sounds/hurt1.wav");
+                        hurt1.setVolume(0.15f);
+                        hurt1.setLooping(false);
+
+                        hurt2 = new AudioNode(assetManager, "Sounds/hurt2.wav");
+                        hurt2.setVolume(0.5f);
+                        hurt2.setLooping(false);
+
+                    }
+                    else if(medium.isFocused)
+                    {
+                        guiNode.detachAllChildren();
+                        flyCam.setEnabled(true);
+                        inputManager.setCursorVisible(false);
+                        kecrudal = 7f;
+
+                        //initApp();
+                        isRunning = true;
+                    }
+                    else if(hard.isFocused)
+                    {
+                        guiNode.detachAllChildren();
+                        flyCam.setEnabled(true);
+                        inputManager.setCursorVisible(false);
+                        kecrudal = 15f;
+
+                        //initApp();
+                        isRunning = true;
+                    }
+
+                    if(exit.isFocused)
+                    {
+                        app.stop();
+                    }
+            */
             
+                
         }
     };
 
@@ -586,155 +734,173 @@ implements PhysicsCollisionListener
     
     @Override
     public void simpleUpdate(float tpf) {
-        //TODO: add update code 
-        /*for(String nama : hero.getControl(AnimControl.class).getAnimationNames())
-            System.out.println(nama);*/
-        hero.getControl(AnimControl.class).getAnimationNames();
-        walkDirection.zero();
-        Vector3f camDir = cam.getDirection().clone().multLocal(kecepatan);
-        Vector3f camLeft = cam.getLeft().clone().multLocal(kecepatan);
-        camDir.y = 0;
-        camLeft.y = 0;        
-        float airTime = 0;
         
-        if (!herocontrol.onGround()) 
+        //if(isRunning)
+        //{
+            //TODO: add update code 
+            /*for(String nama : hero.getControl(AnimControl.class).getAnimationNames())
+                System.out.println(nama);*/
+            hero.getControl(AnimControl.class).getAnimationNames();
+            walkDirection.zero();
+            Vector3f camDir = cam.getDirection().clone().multLocal(kecepatan);
+            Vector3f camLeft = cam.getLeft().clone().multLocal(kecepatan);
+            camDir.y = 0;
+            camLeft.y = 0;        
+            float airTime = 0;
+
+            if (!herocontrol.onGround()) 
+                {
+                   airTime = airTime + tpf;
+                } 
+            else 
+                {
+                    airTime = 0;
+                }
+
+            if(left) walkDirection.addLocal(camLeft); // cam.getLeft()
+            if(right) walkDirection.addLocal(camLeft.negate());
+            if(forward) walkDirection.addLocal(camDir); // cam.getDirection()
+            if(backward) walkDirection.addLocal(camDir.negate());
+            herocontrol.setWalkDirection(walkDirection);
+            //cam.setLocation(herocontrol.getPhysicsLocation());
+
+            //Third Person
+            if(walkDirection.length() > 0)
             {
-               airTime = airTime + tpf;
-            } 
-        else 
-            {
-                airTime = 0;
+                herocontrol.setViewDirection(walkDirection);
             }
-        
-        if(left) walkDirection.addLocal(camLeft); // cam.getLeft()
-        if(right) walkDirection.addLocal(camLeft.negate());
-        if(forward) walkDirection.addLocal(camDir); // cam.getDirection()
-        if(backward) walkDirection.addLocal(camDir.negate());
-        herocontrol.setWalkDirection(walkDirection);
-        //cam.setLocation(herocontrol.getPhysicsLocation());
-        
-        //Third Person
-        if(walkDirection.length() > 0)
-        {
-            herocontrol.setViewDirection(walkDirection);
+
+            float x, y, z, x1, y1, z1;
+            x = herocontrol.getPhysicsLocation().x;
+            y = herocontrol.getPhysicsLocation().y;
+            z = herocontrol.getPhysicsLocation().z; 
+
+            x1 = rudalc.getPhysicsLocation().x;
+            y1 = rudalc.getPhysicsLocation().y;
+            z1 = rudalc.getPhysicsLocation().z;
+            float moveX=0, moveY=0, moveZ=0;
+
+            //Kondisi Rudal Supaya Ngejar Hero (thanks kk aslab udah dibantuin :D )
+            if (x1 > x)
+                moveX=-1;
+            else if (x1<x)
+                moveX=+1;
+            if (y1 > y)
+                moveY=-1;
+            else if (y1<y)
+                moveY=+1;
+            if (z1 > z)
+                moveZ=-1;
+            else if (z1<z)
+                moveZ=+1;
+
+
+            //rudalc.setPhysicsLocation(new Vector3f(x*tpf*0.005f, y*tpf*0.005f, z*tpf*0.005f));
+            rudal.move(moveX*tpf*kecrudal, moveY*tpf*kecrudal, moveZ*tpf*kecrudal);
+            rudal.lookAt(hero.getLocalTranslation(), hero.getLocalTranslation());
+            //rudal.setLocalTranslation(x1, y1, z1);
+            //System.out.println("x: " + rudal.getLocalTranslation().x);
+
+            float px1, py1, pz1, px2, py2, pz2, px3, py3, pz3;
+            float movePX1 = 0, movePY1 = 0, movePZ1 = 0;
+            px1 = platfrm12.getPhysicsLocation().x;
+            py1 = platfrm12.getPhysicsLocation().y;
+            pz1 = platfrm12.getPhysicsLocation().z;
+
+            px2 = platfrm13.getPhysicsLocation().x;
+            py2 = platfrm13.getPhysicsLocation().y;
+            pz2 = platfrm13.getPhysicsLocation().z;
+
+            px3 = platfrm11.getPhysicsLocation().x;
+            py3 = platfrm11.getPhysicsLocation().y;
+            pz3 = platfrm11.getPhysicsLocation().z;
+
+            /*
+            if(px1 < px2)
+            {
+                do
+                {
+                    movePX1=+1;
+                }
+                while(px1 < px2);
+            }
+            else if(px1 >= px2)
+            {
+                do
+                {
+                    movePX1=-1;
+                }
+                while(px1 > px3);   
+            }
+
+            if(pz1 < pz2)
+            {
+                do
+                {
+                    movePZ1=+1;
+                }
+                while(pz1 < pz2);
+            }
+            else if(pz1 >= pz2)
+            {
+                do
+                {
+                    movePZ1=-1;
+                }
+                while(pz1 > pz3);   
+            }
+
+            if(px1 >= px2 && pz1 >= pz2)
+            {
+                if(px1 > px3)
+                {
+                    movePX1 =-1;
+                }
+                else if(px1 < px3)
+                {
+                    movePZ1 =+1;
+                }
+            }
+            else if(px1 < px2 && pz1 < pz2)
+            {
+                    if(px1 > px2)
+                {
+                    movePX1 =- 1;
+                }
+                else if(px1 < px2)
+                {
+                    movePX1 =+ 1;
+                }
+
+                if(pz1 > pz2)
+                {
+                    movePZ1 =- 1;
+                }
+                else if(pz1 < pz2)
+                {
+                    movePZ1 =+ 1;
+                }
+            }*/
+
+            platform12.move(movePX1*tpf*10, 0, movePZ1*tpf*10);
+            System.out.println("x :"+px1);
+            System.out.println("xpt13 :"+px2);
         }
-        
-        float x, y, z, x1, y1, z1;
-        x = herocontrol.getPhysicsLocation().x;
-        y = herocontrol.getPhysicsLocation().y;
-        z = herocontrol.getPhysicsLocation().z; 
-        
-        x1 = rudalc.getPhysicsLocation().x;
-        y1 = rudalc.getPhysicsLocation().y;
-        z1 = rudalc.getPhysicsLocation().z;
-        float moveX=0, moveY=0, moveZ=0;
-        
-        //Kondisi Rudal Supaya Ngejar Hero (thanks kk aslab udah dibantuin :D )
-        if (x1 > x)
-            moveX=-1;
-        else if (x1<x)
-            moveX=+1;
-        if (y1 > y)
-            moveY=-1;
-        else if (y1<y)
-            moveY=+1;
-        if (z1 > z)
-            moveZ=-1;
-        else if (z1<z)
-            moveZ=+1;
-        
-        
-        //rudalc.setPhysicsLocation(new Vector3f(x*tpf*0.005f, y*tpf*0.005f, z*tpf*0.005f));
-        rudal.move(moveX*tpf*3, moveY*tpf*3, moveZ*tpf*3);
-        rudal.lookAt(hero.getLocalTranslation(), hero.getLocalTranslation());
-        //rudal.setLocalTranslation(x1, y1, z1);
-        //System.out.println("x: " + rudal.getLocalTranslation().x);
-        
-        float px1, py1, pz1, px2, py2, pz2, px3, py3, pz3;
-        float movePX1 = 0, movePY1 = 0, movePZ1 = 0;
-        px1 = platfrm12.getPhysicsLocation().x;
-        py1 = platfrm12.getPhysicsLocation().y;
-        pz1 = platfrm12.getPhysicsLocation().z;
-        
-        px2 = platfrm13.getPhysicsLocation().x;
-        py2 = platfrm13.getPhysicsLocation().y;
-        pz2 = platfrm13.getPhysicsLocation().z;
-        
-        px3 = platfrm11.getPhysicsLocation().x;
-        py3 = platfrm11.getPhysicsLocation().y;
-        pz3 = platfrm11.getPhysicsLocation().z;
-        
-        /*
-        if(px1 < px2)
+    /*
+        else
         {
-            do
-            {
-                movePX1=+1;
-            }
-            while(px1 < px2);
-        }
-        else if(px1 >= px2)
-        {
-            do
-            {
-                movePX1=-1;
-            }
-            while(px1 > px3);   
-        }
-        
-        if(pz1 < pz2)
-        {
-            do
-            {
-                movePZ1=+1;
-            }
-            while(pz1 < pz2);
-        }
-        else if(pz1 >= pz2)
-        {
-            do
-            {
-                movePZ1=-1;
-            }
-            while(pz1 > pz3);   
-        }
-        
-        if(px1 >= px2 && pz1 >= pz2)
-        {
-            if(px1 > px3)
-            {
-                movePX1 =-1;
-            }
-            else if(px1 < px3)
-            {
-                movePZ1 =+1;
-            }
-        }
-        else if(px1 < px2 && pz1 < pz2)
-        {
-                if(px1 > px2)
-            {
-                movePX1 =- 1;
-            }
-            else if(px1 < px2)
-            {
-                movePX1 =+ 1;
-            }
-        
-            if(pz1 > pz2)
-            {
-                movePZ1 =- 1;
-            }
-            else if(pz1 < pz2)
-            {
-                movePZ1 =+ 1;
-            }
+            easy.onMouseEnter(inputManager);
+            easy.onMouseLeave();
+            
+            medium.onMouseEnter(inputManager);
+            medium.onMouseLeave();
+            
+            hard.onMouseEnter(inputManager);
+            hard.onMouseLeave();
+            
+            exit.onMouseEnter(inputManager);
+            exit.onMouseLeave();
         }*/
-        
-        platform12.move(movePX1*tpf*10, 0, movePZ1*tpf*10);
-        System.out.println("x :"+px1);
-        System.out.println("xpt13 :"+px2);
-    }
 
     @Override
     public void simpleRender(RenderManager rm) {
