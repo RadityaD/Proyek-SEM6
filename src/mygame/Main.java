@@ -6,6 +6,7 @@ import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
 import com.jme3.app.SimpleApplication;
+import com.jme3.audio.AudioNode;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
@@ -54,6 +55,7 @@ implements PhysicsCollisionListener
 {
     
     //Deklarasi
+    AudioNode hurt1, hurt2, sound;
     Material mat_terrain;
     Material mat_terrain1;
     TerrainQuad terrain;
@@ -488,11 +490,19 @@ implements PhysicsCollisionListener
         bulletAppState.getPhysicsSpace().addCollisionListener(this);
         //chaseCam.setLookAtOffset(Vector3f.UNIT_Y.mult(10));
         //chaseCam.setLookAtOffset(Vector3f.UNIT_X.mult(20));
-        /*
-        AudioNode sound = new AudioNode(assetManager, "Sound/Environment/Nature.ogg");
+        
+        sound = new AudioNode(assetManager, "Sounds/lavasound.ogg");
         sound.setVolume(30f);
         sound.setLooping(true);
-        sound.play();*/         
+        sound.play(); 
+        
+        hurt1 = new AudioNode(assetManager, "Sounds/hurt1.wav");
+        hurt1.setVolume(0.15f);
+        hurt1.setLooping(false);
+        
+        hurt2 = new AudioNode(assetManager, "Sounds/hurt2.wav");
+        hurt2.setVolume(0.5f);
+        hurt2.setLooping(false);
         
         
     }
@@ -750,9 +760,10 @@ implements PhysicsCollisionListener
                 )
            )
         {
-            //herocontrol.setPhysicsLocation(new Vector3f(-370, 20, -380));
+            herocontrol.setPhysicsLocation(new Vector3f(-370, 20, -380));
             rudal.setLocalTranslation(-390, 5, -380);
             guiNode.detachChild(notif);
+            hurt2.play();
             notiftext = "MATI KARENA LAVA";
             initGUI2D();
         }
@@ -773,6 +784,7 @@ implements PhysicsCollisionListener
             
             herocontrol.setPhysicsLocation(new Vector3f(-370, 20, -380));
             rudal.setLocalTranslation(-390, 5, -380);
+            hurt1.play();
             notiftext = "MATI KARENA RUDAL";
             guiNode.detachChild(notif);
             initGUI2D();
