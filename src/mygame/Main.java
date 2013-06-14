@@ -58,10 +58,8 @@ implements PhysicsCollisionListener
 {
     
     //Deklarasi
-    static Main app;
     AudioNode hurt1, hurt2, sound;
-    Button easy, medium, hard, exit;
-    Boolean isRunning = false, isEasy = false, isMedium = false, isHard = false, pulang = false;
+    Boolean isRunning = false, isEasy = false, isMedium = false, isHard = false, pergi = false, pulang = false;
     Material mat_terrain;
     Material mat_terrain1;
     TerrainQuad terrain;
@@ -85,7 +83,7 @@ implements PhysicsCollisionListener
     
 
     public static void main(String[] args) {
-        app = new Main();
+        Main app = new Main();
         app.showSettings = false;
         app.settings = new AppSettings(true);
         app.settings.setResolution(800, 600);
@@ -471,56 +469,6 @@ implements PhysicsCollisionListener
         guiNode.attachChild(notif);
     }
     
-    void initMenu()
-    {
-        /*
-        Picture background = new Picture("Background");
-        background.setImage(assetManager, "Menu/bg.png", true);
-        background.setWidth(settings.getWidth());
-        background.setHeight(settings.getHeight());
-        background.setPosition(0, 0);
-        */
-        
-        flyCam.setEnabled(false);
-        //guiNode.attachChild(background);
-        inputManager.setCursorVisible(true);
-        
-        
-        initButton();
-    }
-    
-    void initButton()
-    {
-        easy = new Button(assetManager, "easy", "easybtn.png");
-        easy.setHoverImage("easybtnh.png");
-        easy.setWidth(150);
-        easy.setHeight(80);
-        easy.setPosition(20, 5);
-        
-        medium = new Button(assetManager, "medium", "mediumbtn.png");
-        medium.setHoverImage("mediumbtnh.png");
-        medium.setWidth(150);
-        medium.setHeight(80);
-        medium.setPosition(240, 5);
-        
-        hard = new Button(assetManager, "hard", "hardbtn.png");
-        hard.setHoverImage("hardbtnh.png");
-        hard.setWidth(150);
-        hard.setHeight(80);
-        hard.setPosition(450, 5);
-        
-        exit = new Button(assetManager, "exit", "exitbtn.png");
-        exit.setHoverImage("exitbtnh.png");
-        exit.setWidth(150);
-        exit.setHeight(72);
-        exit.setPosition(640, 8);
-        
-        guiNode.attachChild(easy);
-        guiNode.attachChild(medium);
-        guiNode.attachChild(hard);
-        guiNode.attachChild(exit);
-    }
-    
        
     
      
@@ -631,86 +579,6 @@ implements PhysicsCollisionListener
                 {
                     kecepatan = 0.4f;
                 }          
-                
-                /* GAGAL MASUKIN MENU
-                if(easy.isFocused)
-                    {
-                        guiNode.detachAllChildren();
-                        flyCam.setEnabled(true);
-                        inputManager.setCursorVisible(false);
-                        kecrudal = 3f;
-
-
-                        isRunning = true;
-
-                                    //Warna Background Viewport
-                        viewPort.setBackgroundColor(ColorRGBA.Cyan);
-                        //Camera Move Speed
-                        flyCam.setMoveSpeed(1000f);
-
-                        //Panggil Fungsi Terrain
-                        initTiren();
-
-                        initPlatforms();
-                        //Panggil Fungsi Animasi
-                        //initAnim();
-                        //Panggil Fungsi Hero
-                        initHero();
-
-                        initRudal();
-                        //Panggil Fungsi Mapping Tombol
-                        initKeys();
-                        initGUI2D();
-                        flyCam.setEnabled(false); 
-                        ChaseCamera chaseCam = new ChaseCamera(cam, hero, inputManager);
-                        //chaseCam.setTrailingEnabled(true);
-
-                        //bulletAppState.getPhysicsSpace().addCollisionListener(this);
-                        //chaseCam.setLookAtOffset(Vector3f.UNIT_Y.mult(10));
-                        //chaseCam.setLookAtOffset(Vector3f.UNIT_X.mult(20));
-
-                        sound = new AudioNode(assetManager, "Sounds/lavasound.ogg");
-                        sound.setVolume(30f);
-                        sound.setLooping(true);
-                        sound.play(); 
-
-                        hurt1 = new AudioNode(assetManager, "Sounds/hurt1.wav");
-                        hurt1.setVolume(0.15f);
-                        hurt1.setLooping(false);
-
-                        hurt2 = new AudioNode(assetManager, "Sounds/hurt2.wav");
-                        hurt2.setVolume(0.5f);
-                        hurt2.setLooping(false);
-
-                    }
-                    else if(medium.isFocused)
-                    {
-                        guiNode.detachAllChildren();
-                        flyCam.setEnabled(true);
-                        inputManager.setCursorVisible(false);
-                        kecrudal = 7f;
-
-                        //initApp();
-                        isRunning = true;
-                    }
-                    else if(hard.isFocused)
-                    {
-                        guiNode.detachAllChildren();
-                        flyCam.setEnabled(true);
-                        inputManager.setCursorVisible(false);
-                        kecrudal = 15f;
-
-                        //initApp();
-                        isRunning = true;
-                    }
-
-                    if(exit.isFocused)
-                    {
-                        app.stop();
-                    }
-            */
-            
-                
         }
     };
 
@@ -718,12 +586,6 @@ implements PhysicsCollisionListener
 
         public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) 
         {
-            /*
-            if(animName.equals("JumpStart"))
-            {
-                animchn1.setAnim("IdleTop");
-                animchn2.setAnim("IdleBase");
-            }*/
             
         }
         public void onAnimChange(AnimControl control, AnimChannel channel, String animName) 
@@ -735,8 +597,6 @@ implements PhysicsCollisionListener
     @Override
     public void simpleUpdate(float tpf) {
         
-        //if(isRunning)
-        //{
             //TODO: add update code 
             /*for(String nama : hero.getControl(AnimControl.class).getAnimationNames())
                 System.out.println(nama);*/
@@ -805,7 +665,7 @@ implements PhysicsCollisionListener
             //rudal.setLocalTranslation(x1, y1, z1);
             //System.out.println("x: " + rudal.getLocalTranslation().x);
 
-            float px1, py1, pz1, px2, py2, pz2, px3, py3, pz3;
+            float px1, py1, pz1, px2, py2, pz2, px3, py3, pz3, fy1;
             float movePX1 = 0, movePY1 = 0, movePZ1 = 0;
             px1 = platfrm12.getPhysicsLocation().x;
             py1 = platfrm12.getPhysicsLocation().y;
@@ -818,20 +678,22 @@ implements PhysicsCollisionListener
             px3 = platfrm11.getPhysicsLocation().x;
             py3 = platfrm11.getPhysicsLocation().y;
             pz3 = platfrm11.getPhysicsLocation().z;
+            
+            fy1 = FinishPlat.getPhysicsLocation().y;
 
             if(pulang == false)
             {
-                if(px1 < px2 - 20)
+                if(px1 < px2 - 5)
                 {
                         movePX1=+1;
                 }
 
-                if(pz1 < pz2 - 20)
+                if(pz1 < pz2 - 5)
                 {
                         movePZ1=+1;
                 }
                 
-                if(px1 >= px2 - 20 || pz1 >= pz2 - 20)
+                if(px1 >= px2 - 5 && pz1 >= pz2 - 5)
                 {
                     pulang = true;
                 }
@@ -839,43 +701,50 @@ implements PhysicsCollisionListener
             
             if(pulang == true)
             {
-                if(px1 > px3 + 10)
+                if(px1 > px3 +5)
                 {     
                         movePX1=-1;   
                 }
 
 
-                if(pz1 > pz3 + 10)
+                if(pz1 > pz3 + 5)
                 {     
                         movePZ1=-1;   
                 }
                 
-                if(px1 <= px3 + 10 || pz1 <= pz3 + 10)
+                if(px1 <= px3 + 5 && pz1 <= pz3 + 5)
                 {
                     pulang = false;
                 }
             }
 
+            if(pergi == false)
+            {
+                if(py2 < fy1)
+                {
+                    movePY1=+1;
+                }
+                if(py2 >= fy1)
+                {
+                    pergi = true;
+                }
+            }
+            if(pergi == true)
+            {
+                if(py2 > py1)
+                {
+                    movePY1=-1;
+                }
+                if(py2 <= py1)
+                {
+                    pergi = false;
+                }
+            }
 
-            platform12.move(movePX1*tpf*20, 0, movePZ1*tpf*20);
-            System.out.println("x :"+px1);
-            System.out.println("xpt13 :"+px2);
+            
+            platform12.move(movePX1*tpf*15, 0, movePZ1*tpf*10);
+            platform13.move(0, movePY1*tpf*20, 0);
         }
-    /*
-        else
-        {
-            easy.onMouseEnter(inputManager);
-            easy.onMouseLeave();
-            
-            medium.onMouseEnter(inputManager);
-            medium.onMouseLeave();
-            
-            hard.onMouseEnter(inputManager);
-            hard.onMouseLeave();
-            
-            exit.onMouseEnter(inputManager);
-            exit.onMouseLeave();
-        }*/
 
     @Override
     public void simpleRender(RenderManager rm) {
@@ -966,6 +835,27 @@ implements PhysicsCollisionListener
             //guiNode.detachChild(notif);
             //notiftext = "HINT PRESS SHIFT TO SPRINT";
             //initGUI2D();
+        }
+        
+        else if(
+                    (
+                    event.getNodeA().getName().equals("Sinbad-ogremesh") 
+                    && 
+                    event.getNodeB().getName().equals("FinishPlatform-ogremesh")
+                    )
+                    ||
+                    (
+                    event.getNodeB().getName().equals("Sinbad-ogremesh") 
+                    && 
+                    event.getNodeA().getName().equals("FinishPlatform-ogremesh")
+                    )
+                )
+        {
+            
+            notiftext = "FINISH";
+            guiNode.detachChild(notif);
+            initGUI2D();
+            
         }
         else
         {
