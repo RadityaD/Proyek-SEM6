@@ -61,7 +61,7 @@ implements PhysicsCollisionListener
     static Main app;
     AudioNode hurt1, hurt2, sound;
     Button easy, medium, hard, exit;
-    Boolean isRunning = false, isEasy = false, isMedium = false, isHard = false;
+    Boolean isRunning = false, isEasy = false, isMedium = false, isHard = false, pulang = false;
     Material mat_terrain;
     Material mat_terrain1;
     TerrainQuad terrain;
@@ -751,11 +751,15 @@ implements PhysicsCollisionListener
             if (!herocontrol.onGround()) 
                 {
                    airTime = airTime + tpf;
+                   if(airTime > 0.3f)
+                    animchn3.setAnim("JumpLoop", 1f);
                 } 
             else 
                 {
                     airTime = 0;
                 }
+            
+          
 
             if(left) walkDirection.addLocal(camLeft); // cam.getLeft()
             if(right) walkDirection.addLocal(camLeft.negate());
@@ -815,74 +819,45 @@ implements PhysicsCollisionListener
             py3 = platfrm11.getPhysicsLocation().y;
             pz3 = platfrm11.getPhysicsLocation().z;
 
-            /*
-            if(px1 < px2)
+            if(pulang == false)
             {
-                do
+                if(px1 < px2 - 20)
                 {
-                    movePX1=+1;
-                }
-                while(px1 < px2);
-            }
-            else if(px1 >= px2)
-            {
-                do
-                {
-                    movePX1=-1;
-                }
-                while(px1 > px3);   
-            }
-
-            if(pz1 < pz2)
-            {
-                do
-                {
-                    movePZ1=+1;
-                }
-                while(pz1 < pz2);
-            }
-            else if(pz1 >= pz2)
-            {
-                do
-                {
-                    movePZ1=-1;
-                }
-                while(pz1 > pz3);   
-            }
-
-            if(px1 >= px2 && pz1 >= pz2)
-            {
-                if(px1 > px3)
-                {
-                    movePX1 =-1;
-                }
-                else if(px1 < px3)
-                {
-                    movePZ1 =+1;
-                }
-            }
-            else if(px1 < px2 && pz1 < pz2)
-            {
-                    if(px1 > px2)
-                {
-                    movePX1 =- 1;
-                }
-                else if(px1 < px2)
-                {
-                    movePX1 =+ 1;
+                        movePX1=+1;
                 }
 
-                if(pz1 > pz2)
+                if(pz1 < pz2 - 20)
                 {
-                    movePZ1 =- 1;
+                        movePZ1=+1;
                 }
-                else if(pz1 < pz2)
+                
+                if(px1 >= px2 - 20 || pz1 >= pz2 - 20)
                 {
-                    movePZ1 =+ 1;
+                    pulang = true;
                 }
-            }*/
+            }
+            
+            if(pulang == true)
+            {
+                if(px1 > px3 + 10)
+                {     
+                        movePX1=-1;   
+                }
 
-            platform12.move(movePX1*tpf*10, 0, movePZ1*tpf*10);
+
+                if(pz1 > pz3 + 10)
+                {     
+                        movePZ1=-1;   
+                }
+                
+                if(px1 <= px3 + 10 || pz1 <= pz3 + 10)
+                {
+                    pulang = false;
+                }
+            }
+
+
+            platform12.move(movePX1*tpf*20, 0, movePZ1*tpf*20);
             System.out.println("x :"+px1);
             System.out.println("xpt13 :"+px2);
         }
@@ -926,7 +901,7 @@ implements PhysicsCollisionListener
                 )
            )
         {
-            herocontrol.setPhysicsLocation(new Vector3f(-370, 20, -380));
+            //herocontrol.setPhysicsLocation(new Vector3f(-370, 20, -380));
             rudal.setLocalTranslation(-390, 5, -380);
             guiNode.detachChild(notif);
             hurt2.play();
